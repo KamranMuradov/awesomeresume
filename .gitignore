@@ -3,3 +3,8 @@
 /ResumeDesktopApp/.idea
 /ResumeDesktopApp/target
 /ResumeDesktopApp/bin
+/ResumeDbApp/.classpath
+/ResumeDbApp/.project
+/ResumeDesktopApp/.settings
+/ResumeDesktopApp/*.classpath
+/ResumeDesktopApp/*.project
