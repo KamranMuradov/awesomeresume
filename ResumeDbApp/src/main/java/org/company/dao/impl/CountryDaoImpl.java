@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CountryDaoImpl extends AbstractDao implements CountryDaoInter {
+
     private Country getCountry(ResultSet resultSet) throws Exception {
         int id = resultSet.getInt("id");
         String name = resultSet.getString("name");
@@ -21,7 +22,7 @@ public class CountryDaoImpl extends AbstractDao implements CountryDaoInter {
 
     @Override
     public List<Country> getAll() {
-        List<Country> result = new ArrayList<>();
+        List<Country> allCountry = new ArrayList<>();
         try (Connection connection = connect()) {
 
             Statement statement = connection.createStatement();
@@ -30,66 +31,76 @@ public class CountryDaoImpl extends AbstractDao implements CountryDaoInter {
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
                 Country country = getCountry(resultSet);
-                result.add(country);
+                allCountry.add(country);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return allCountry;
     }
 
     @Override
     public Country getById(int countryId) {
-        Country result = null;
+        Country country = null;
+        
         try (Connection connection = connect()) {
             Statement statement = connection.createStatement();
             statement.execute("select * from country where id =" + countryId);
 
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
-                result = getCountry(resultSet);
+                country = getCountry(resultSet);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return country;
+    }
+
+    @Override
+    public boolean addCountry(Country country) {
+        boolean result;
+        
+        try (Connection connection = connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into country (name, nationality) values (?,?)");
+            preparedStatement.setString(1, country.getName());
+            preparedStatement.setString(2, country.getNationality());
+            result = preparedStatement.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
         }
         return result;
     }
 
     @Override
-    public boolean addCountry(Country country) {
-        try (Connection connection = connect()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into country (name, nationality) values (?,?)");
-            preparedStatement.setString(1, country.getName());
-            preparedStatement.setString(2, country.getNationality());
-            return preparedStatement.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
     public boolean updateCountry(Country country) {
+        boolean result;
+        
         try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement("update country set name = ?, nationality = ? where id = ?");
             preparedStatement.setString(1, country.getName());
             preparedStatement.setString(2, country.getNationality());
             preparedStatement.setInt(3, country.getId());
-            return preparedStatement.execute();
+            result = preparedStatement.execute();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 
     @Override
     public boolean removeCountry(int id) {
+        boolean result;
+
         try (Connection connection = connect()) {
             Statement statement = connection.createStatement();
-            return statement.execute("delete from country where id = " + id);
+            result = statement.execute("delete from country where id = " + id);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 }

@@ -33,7 +33,7 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
 
     @Override
     public List<User> getAll() {
-        List<User> result = new ArrayList<>();
+        List<User> allUser = new ArrayList<>();
         try (Connection connection = connect()) {
 
             Statement statement = connection.createStatement();
@@ -48,17 +48,17 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
             while (resultSet.next()) {
                 User user = getUser(resultSet);
 
-                result.add(user);
+                allUser.add(user);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return allUser;
     }
 
     @Override
     public User getById(int userId) {
-        User result = null;
+        User user = null;
         try (Connection connection = connect()) {
 
             Statement statement = connection.createStatement();
@@ -67,20 +67,22 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
                     + " n.nationality, "
                     + " c.name as birthplace "
                     + " from user u"
-                    + " LEFT JOIN country n on u.nationality_id=n.id"
-                    + " LEFT JOIN country c on u.birthplace_id=c.id where u.id = " + userId);
+                    + " LEFT JOIN country n on u.nationality_id = n.id"
+                    + " LEFT JOIN country c on u.birthplace_id = c.id where u.id = " + userId);
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
-                result = getUser(resultSet);
+                user = getUser(resultSet);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return user;
     }
 
     @Override
     public boolean addUser(User user) {
+        boolean result;
+
         try (Connection connection = connect()) {
 
             PreparedStatement preparedStatement = connection.prepareStatement(
@@ -93,19 +95,22 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
             preparedStatement.setString(5, user.getProfileDesc());
             preparedStatement.setString(6, user.getAddress());
 
-            return preparedStatement.execute();
+            result = preparedStatement.execute();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 
     @Override
     public boolean updateUser(User user) {
+        boolean result;
+
         try (Connection connection = connect()) {
 
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "update user set name = ?, surname = ?, email = ?, phone = ?, profile_description = ?, address = ?, birthdate = ? where id = ?"
+                    "update user set name = ?, surname = ?, email = ?, phone = ?, profile_description = ?, address = ?, birthdate = ?, birthplace_id = ?, nationality_id = ? where id = ?"
             );
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getSurname());
@@ -114,23 +119,29 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
             preparedStatement.setString(5, user.getProfileDesc());
             preparedStatement.setString(6, user.getAddress());
             preparedStatement.setDate(7, user.getBirthdate());
-            preparedStatement.setInt(8, user.getId());
-            return preparedStatement.execute();
+            preparedStatement.setInt(8, user.getBirthPlace().getId());
+            preparedStatement.setInt(9, user.getNationality().getId());
+            preparedStatement.setInt(10, user.getId());
+            result = preparedStatement.execute();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 
     @Override
     public boolean removeUser(int id) {
+        boolean result;
+
         try (Connection connection = connect()) {
 
             Statement statement = connection.createStatement();
-            return statement.execute("delete from user where id = " + id);
+            result = statement.execute("delete from user where id = " + id);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 }

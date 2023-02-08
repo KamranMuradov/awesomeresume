@@ -22,7 +22,7 @@ public class SkillDaoImpl extends AbstractDao implements SkillDaoInter {
 
     @Override
     public List<Skill> getAll() {
-        List<Skill> result = new ArrayList<>();
+        List<Skill> allSkill = new ArrayList<>();
         try (Connection connection = connect()) {
             Statement statement = connection.createStatement();
             statement.execute("select * from skill");
@@ -30,67 +30,80 @@ public class SkillDaoImpl extends AbstractDao implements SkillDaoInter {
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
                 Skill skill = getSkill(resultSet);
-                result.add(skill);
+                allSkill.add(skill);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return result;
+        return allSkill;
     }
 
     @Override
     public Skill getById(int skillId) {
-        Skill result = null;
+        Skill skill = null;
         try (Connection connection = connect()) {
             Statement statement = connection.createStatement();
             statement.execute("select from skill where id  = " + skillId);
 
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
-                result = getSkill(resultSet);
+                skill = getSkill(resultSet);
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return skill;
+    }
+
+    @Override
+    public boolean addSkill(Skill skill) {
+        boolean result;
+
+        try (Connection connection = connect()) {
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into skill (name) values (?)", Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setString(1, skill.getName());
+            result = preparedStatement.execute();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                skill.setId(generatedKeys.getInt(1));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            result = false;
         }
         return result;
     }
 
     @Override
-    public boolean addSkill(Skill skill) {
-        try (Connection connection = connect()) {
-            PreparedStatement preparedStatement = connection.prepareStatement("insert into skill (name) values (?)");
-            preparedStatement.setString(1, skill.getName());
-
-            return preparedStatement.execute();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    @Override
     public boolean updateSkill(Skill skill) {
+        boolean result;
+
         try (Connection connection = connect()) {
             PreparedStatement preparedStatement = connection.prepareStatement("update  skill set name = ? where id = ?");
             preparedStatement.setString(1, skill.getName());
             preparedStatement.setInt(2, skill.getId());
 
-            return preparedStatement.execute();
+            result = preparedStatement.execute();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 
     @Override
     public boolean removeSkill(int id) {
-        Statement statement;
+        boolean result;
+
         try (Connection connection = connect()) {
-            statement = connection.createStatement();
-            return statement.execute("delete from skill where id =" + id);
+            Statement statement = connection.createStatement();
+            result = statement.execute("delete from skill where id =" + id);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            result = false;
         }
+        return result;
     }
 }
