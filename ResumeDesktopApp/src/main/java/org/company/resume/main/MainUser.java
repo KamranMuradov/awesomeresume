@@ -6,10 +6,7 @@ package org.company.resume.main;
 
 import org.company.resume.config.Config;
 import org.company.dao.inter.UserDaoInter;
-import org.company.entity.Country;
-import org.company.entity.User;
 import org.company.main.Context;
-import org.company.resume.panel.ProfilePanel;
 
 /**
  *
@@ -29,6 +26,7 @@ public class MainUser extends javax.swing.JFrame {
         pnlProfile.fillUserComponents();
         pnlDetails.fillUserComponents();
         pnlSkills.fillUserComponents();
+        pnlEmploymentHistory.fillUserComponents();
     }
 
     private void fillUserComponents() {
@@ -49,8 +47,8 @@ public class MainUser extends javax.swing.JFrame {
         tpUserInfo = new javax.swing.JTabbedPane();
         pnlProfile = new org.company.resume.panel.ProfilePanel();
         pnlDetails = new org.company.resume.panel.DetailsPanel();
-        pnlHistory = new javax.swing.JPanel();
         pnlSkills = new org.company.resume.panel.SkillsPanel();
+        pnlEmploymentHistory = new org.company.resume.panel.EmploymentHistoryPanel();
         pnlUserInfo = new javax.swing.JPanel();
         lblName = new javax.swing.JLabel();
         txtName = new javax.swing.JTextField();
@@ -62,20 +60,8 @@ public class MainUser extends javax.swing.JFrame {
 
         tpUserInfo.addTab("Profile", pnlProfile);
         tpUserInfo.addTab("Details", pnlDetails);
-
-        javax.swing.GroupLayout pnlHistoryLayout = new javax.swing.GroupLayout(pnlHistory);
-        pnlHistory.setLayout(pnlHistoryLayout);
-        pnlHistoryLayout.setHorizontalGroup(
-            pnlHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 583, Short.MAX_VALUE)
-        );
-        pnlHistoryLayout.setVerticalGroup(
-            pnlHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 380, Short.MAX_VALUE)
-        );
-
-        tpUserInfo.addTab("Employment History", pnlHistory);
         tpUserInfo.addTab("Skills", pnlSkills);
+        tpUserInfo.addTab("Employment History", pnlEmploymentHistory);
 
         lblName.setText("Name");
         lblName.setToolTipText("Enter your name");
@@ -158,7 +144,7 @@ public class MainUser extends javax.swing.JFrame {
                 .addGap(24, 24, 24)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(tpUserInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                .addComponent(tpUserInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 411, Short.MAX_VALUE)
                 .addGap(22, 22, 22))
         );
 
@@ -229,7 +215,7 @@ public class MainUser extends javax.swing.JFrame {
     private javax.swing.JLabel lblName;
     private javax.swing.JLabel lblSurname;
     private org.company.resume.panel.DetailsPanel pnlDetails;
-    private javax.swing.JPanel pnlHistory;
+    private org.company.resume.panel.EmploymentHistoryPanel pnlEmploymentHistory;
     private org.company.resume.panel.ProfilePanel pnlProfile;
     private org.company.resume.panel.SkillsPanel pnlSkills;
     private javax.swing.JPanel pnlUserInfo;

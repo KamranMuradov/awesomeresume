@@ -8,8 +8,6 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.company.resume.config.Config;
 import org.company.dao.inter.CountryDaoInter;
 import org.company.entity.Country;

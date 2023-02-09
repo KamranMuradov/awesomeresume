@@ -8,4 +8,10 @@ public interface EmploymentHistoryDaoInter {
 
     List<EmploymentHistory> getAllEmploymentHistoryByUserId(int userId);
 
+    boolean addEmploymentHistory(EmploymentHistory employmentHistory);
+
+    boolean updateEmploymentHistory(EmploymentHistory employmentHistory);
+
+    boolean removeEmploymentHistory(int id);
+
 }

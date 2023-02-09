@@ -85,6 +85,7 @@ public class SkillsPanel extends javax.swing.JPanel {
         lblPower = new javax.swing.JLabel();
         btnAdd = new javax.swing.JToggleButton();
         btnDelete = new javax.swing.JToggleButton();
+        btnSave = new javax.swing.JToggleButton();
 
         tblSkills.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -121,6 +122,13 @@ public class SkillsPanel extends javax.swing.JPanel {
             }
         });
 
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSaveActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -143,6 +151,8 @@ public class SkillsPanel extends javax.swing.JPanel {
                         .addComponent(btnAdd)
                         .addGap(18, 18, 18)
                         .addComponent(btnDelete)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnSave)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -158,7 +168,8 @@ public class SkillsPanel extends javax.swing.JPanel {
                 .addGap(26, 26, 26)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnAdd)
-                    .addComponent(btnDelete))
+                    .addComponent(btnDelete)
+                    .addComponent(btnSave))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
 
@@ -184,15 +195,15 @@ public class SkillsPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        int selectedColumn = tblSkills.getSelectedColumn();
-        UserSkill selectedUserSkill = list.get(selectedColumn);
+        int selectedRow = tblSkills.getSelectedRow();
+        UserSkill selectedUserSkill = list.get(selectedRow);
         userSkillDao.removeUserSkill(selectedUserSkill.getId());
         fillWindow();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         String skillName = txtSkills.getText();
-        Skill skill = null;
+        Skill skill;
         if (skillName != null && !skillName.trim().isEmpty()) {
             skill = new Skill(0, skillName);
             skillDao.addSkill(skill);
@@ -206,10 +217,31 @@ public class SkillsPanel extends javax.swing.JPanel {
         fillWindow();
     }//GEN-LAST:event_btnAddActionPerformed
 
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        UserSkill selectedUserSkill = list.get(tblSkills.getSelectedRow());
+
+        String skillName = txtSkills.getText();
+        Skill skill;
+        if (skillName != null && !skillName.trim().isEmpty()) {
+            skill = new Skill(0, skillName);
+            skillDao.addSkill(skill);
+        } else {
+            skill = (Skill) cbSkills.getSelectedItem();
+        }
+        int power = sliderPower.getValue();
+
+        selectedUserSkill.setSkill(skill);
+        selectedUserSkill.setPower(power);
+
+        userSkillDao.updateUserSkill(selectedUserSkill);
+        fillWindow();
+    }//GEN-LAST:event_btnSaveActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton btnAdd;
     private javax.swing.JToggleButton btnDelete;
+    private javax.swing.JToggleButton btnSave;
     private javax.swing.JComboBox<Skill> cbSkills;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
