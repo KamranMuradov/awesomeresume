@@ -11,8 +11,8 @@ public class Main {
 
 
     public static void main(String[] args) throws Exception {
-        EmploymentHistoryDaoInter instance = Context.instanceEmploymentHistoryDao();
-        
+//        EmploymentHistoryDaoInter instance = Context.instanceEmploymentHistoryDao();
+        System.out.println("hellow world");
 
 
     }

@@ -43,7 +43,7 @@ public class SkillDaoImpl extends AbstractDao implements SkillDaoInter {
         Skill skill = null;
         try (Connection connection = connect()) {
             Statement statement = connection.createStatement();
-            statement.execute("select from skill where id  = " + skillId);
+            statement.execute("select * from skill where id  = " + skillId);
 
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {

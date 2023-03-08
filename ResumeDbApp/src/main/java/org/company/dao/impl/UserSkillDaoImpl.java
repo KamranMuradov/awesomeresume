@@ -32,14 +32,14 @@ public class UserSkillDaoImpl extends AbstractDao implements UserSkillDaoInter {
         try (Connection connection = connect()) {
 
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT"
-                    + " us.id as user_skill_id,"
+                    + " us.id AS user_skill_id,"
                     + " u.*,"
                     + " us.skill_id,"
-                    + " s.NAME AS skill_name,"
+                    + " s.name AS skill_name,"
                     + " us.power"
                     + " FROM"
                     + " user_skill us"
-                    + " LEFT JOIN USER u ON us.user_id = u.id"
+                    + " LEFT JOIN user u ON us.user_id = u.id"
                     + " LEFT JOIN skill s ON us.skill_id = s.id"
                     + " WHERE"
                     + " us.user_id = ?");
