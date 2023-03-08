@@ -91,7 +91,7 @@
                         <div class="form-group">
                             <label for="nationality">Nationality</label>
                             <input class="form-control" id="nationality" type="text" name="nationality"
-                                   value="<%=user.getBirthPlace().getNationality()%>">
+                                   value="<%=user.getNationality().getNationality()%>">
                         </div>
                     </div>
                 </div>
