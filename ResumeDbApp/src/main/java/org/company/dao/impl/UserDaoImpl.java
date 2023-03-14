@@ -1,5 +1,6 @@
 package org.company.dao.impl;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.company.dao.inter.AbstractDao;
 import org.company.dao.inter.UserDaoInter;
 import org.company.entity.Country;
@@ -29,6 +30,22 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
         Country birthplace = new Country(birthplaceId, birthPlaceStr, null);
 
         return new User(id, name, surname, email, phone, profileDesc, address, birthdate, nationality, birthplace);
+    }private User getUserSimple(ResultSet resultSet) throws Exception {
+        int id = resultSet.getInt("id");
+        String name = resultSet.getString("name");
+        String surname = resultSet.getString("surname");
+        String email = resultSet.getString("email");
+        String phone = resultSet.getString("phone");
+        String profileDesc = resultSet.getString("profile_description");
+        String address = resultSet.getString("address");
+        Date birthdate = resultSet.getDate("birthdate");
+        int nationalityId = resultSet.getInt("nationality_id");
+        int birthplaceId = resultSet.getInt("birthplace_id");
+
+
+        User user = new User(id, name, surname, email, phone, profileDesc, address, birthdate, null, null);
+        user.setPassword(resultSet.getString("password"));
+        return user;
     }
 
     @Override
@@ -104,20 +121,62 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
     }
 
     @Override
+    public User findByEmailAndPassword(String email, String password) {
+        User result = null;
+
+        try (Connection connection = connect()) {
+
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "select * from user where email=? and password=?");
+            preparedStatement.setString(1, email);
+            preparedStatement.setString(2, password);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = getUserSimple(resultSet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        User result = null;
+
+        try (Connection connection = connect()) {
+
+            PreparedStatement preparedStatement = connection.prepareStatement(
+                    "select * from user where email=?");
+            preparedStatement.setString(1, email);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                result = getUserSimple(resultSet);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private static BCrypt.Hasher crypt = BCrypt.withDefaults();
+    @Override
     public boolean addUser(User user) {
         boolean result;
 
         try (Connection connection = connect()) {
 
             PreparedStatement preparedStatement = connection.prepareStatement(
-                    "insert into user (name, surname, email, phone, profile_description, address) values (?, ?, ?, ?, ?, ?)"
+                    "insert into user (name, surname, email, password, phone, profile_description, address) values (?, ?, ?, ?, ?, ?, ?)"
             );
             preparedStatement.setString(1, user.getName());
             preparedStatement.setString(2, user.getSurname());
             preparedStatement.setString(3, user.getEmail());
-            preparedStatement.setString(4, user.getPhone());
-            preparedStatement.setString(5, user.getProfileDesc());
-            preparedStatement.setString(6, user.getAddress());
+            preparedStatement.setString(4, crypt.hashToString(4, user.getPassword().toCharArray()));
+            preparedStatement.setString(5, user.getPhone());
+            preparedStatement.setString(6, user.getProfileDesc());
+            preparedStatement.setString(7, user.getAddress());
 
             result = preparedStatement.execute();
         } catch (Exception e) {
@@ -125,6 +184,12 @@ public class UserDaoImpl extends AbstractDao implements UserDaoInter {
             result = false;
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        User user = new User(0, "test", "test", "test", "test", null, "test", null, null, null);
+        user.setPassword("12345");
+        new UserDaoImpl().addUser(user);
     }
 
     @Override

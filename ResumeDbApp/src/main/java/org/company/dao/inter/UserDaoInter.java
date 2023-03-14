@@ -10,6 +10,10 @@ public interface UserDaoInter {
 
     User getById(int id);
 
+    User findByEmailAndPassword(String email, String password);
+
+    User findByEmail(String email);
+
     boolean addUser(User user);
 
     boolean updateUser(User user);
