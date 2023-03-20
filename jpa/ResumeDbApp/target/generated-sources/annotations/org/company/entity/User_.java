@@ -9,7 +9,7 @@ import org.company.entity.Country;
 import org.company.entity.EmploymentHistory;
 import org.company.entity.UserSkill;
 
-@Generated(value="EclipseLink-2.7.10.v20211216-rNA", date="2023-03-20T14:16:55")
+@Generated(value="EclipseLink-2.7.10.v20211216-rNA", date="2023-03-20T15:02:11")
 @StaticMetamodel(User.class)
 public class User_ { 
 

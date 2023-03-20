@@ -10,6 +10,7 @@ public class Main {
         User user = dao.getById(7);
 //        System.out.println(user.getNationality().getName());
 //        System.out.println(user.getEmail());
+        dao.hashCode();
     }
 
 }
